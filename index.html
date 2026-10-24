@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nutzraum Würfel OS · Bündel</title>
+  <style>
+    :root{--bg:#05060c;--panel:#111422;--edge:#2f375f;--gold:#ffd700;--cyan:#00ccff;--text:#e8ebf5;--muted:#8a90a8}
+    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 80% 0,#13213a 0,var(--bg) 42%);color:var(--text);font:14px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-height:100vh}
+    header{padding:28px max(18px,calc((100vw - 1100px)/2));border-bottom:1px solid var(--edge)} h1{margin:0;color:var(--gold);font-size:clamp(22px,4vw,38px);letter-spacing:.08em;text-transform:uppercase;text-shadow:0 0 18px #ffd70066} .sub{color:var(--cyan);margin:8px 0 0;letter-spacing:.12em;font-size:12px}
+    main{max-width:1100px;margin:auto;padding:26px 18px 56px}.status{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);margin-bottom:24px}.pill{border:1px solid var(--edge);border-radius:999px;padding:4px 10px}.pill b{color:#42f5a7}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px}.card{background:linear-gradient(145deg,#151a2a,#0b0d16);border:1px solid var(--edge);border-radius:14px;padding:18px;min-height:160px;display:flex;flex-direction:column}.n{color:var(--gold);font-size:11px;letter-spacing:.12em}.card h2{font-size:17px;margin:9px 0;color:#fff}.card p{color:var(--muted);margin:0 0 16px}.actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}a{display:inline-block;border:1px solid var(--cyan);border-radius:7px;padding:8px 10px;color:var(--cyan);text-decoration:none;font-weight:bold}a:hover{background:var(--cyan);color:#00101a}.secondary{border-color:var(--edge);color:var(--text)}
+    .note{border-left:3px solid var(--gold);background:#17130a;color:#e8dba5;padding:12px 14px;margin:24px 0;border-radius:0 8px 8px 0;font-size:12px} footer{color:var(--muted);font-size:11px;margin-top:26px}
+  </style>
+</head>
+<body>
+<header><h1>Nutzraum Würfel OS</h1><p class="sub">OFFLINE-BÜNDEL · SYSTEM + 6 ARTEFAKTE</p></header>
+<main>
+  <div class="status"><span class="pill"><b>●</b> BÜNDEL BEREIT</span><span class="pill">7 MODULE</span><span class="pill">LOKAL ÖFFNEN</span></div>
+  <p>Startpunkt für das bereitgestellte System. Die sechs mitgelieferten Artefakte wurden als lokal öffnbare HTML-Module erhalten, weil ihre Inhalte tatsächlich HTML-Anwendungen enthalten.</p>
+  <section class="grid">
+    <article class="card"><span class="n">OS · ONLINE RUNTIME</span><h2>Nutzraum Würfel OS</h2><p>Die laufende Website als Referenz und Startumgebung.</p><div class="actions"><a href="https://iki1uc.github.io/3.eck/" target="_blank" rel="noopener">Online öffnen</a></div></article>
+    <article class="card"><span class="n">MODUL 01</span><h2>CTRL.LER Indexer</h2><p>2T/RAM-basierte Indexer- und Visualisierungsoberfläche.</p><div class="actions"><a href="modules/modul-01-indexer.html">Modul öffnen</a></div></article>
+    <article class="card"><span class="n">MODUL 02</span><h2>React Artifact A</h2><p>Erhaltene lokale React-Artefaktansicht.</p><div class="actions"><a href="modules/modul-02-react.html">Modul öffnen</a></div></article>
+    <article class="card"><span class="n">MODUL 03</span><h2>React Artifact B</h2><p>Erhaltene lokale React-Artefaktansicht.</p><div class="actions"><a href="modules/modul-03-react.html">Modul öffnen</a></div></article>
+    <article class="card"><span class="n">MODUL 04</span><h2>4-System-Architektur</h2><p>OS-/UI-Architekturübersicht mit Statusanzeige.</p><div class="actions"><a href="modules/modul-04-architektur.html">Modul öffnen</a></div></article>
+    <article class="card"><span class="n">MODUL 05</span><h2>React Artifact C</h2><p>Erhaltene lokale React-Artefaktansicht.</p><div class="actions"><a href="modules/modul-05-react.html">Modul öffnen</a></div></article>
+    <article class="card"><span class="n">MODUL 06</span><h2>React Artifact D</h2><p>Erhaltene lokale React-Artefaktansicht.</p><div class="actions"><a href="modules/modul-06-react.html">Modul öffnen</a></div></article>
+  </section>
+  <div class="note">Hinweis: Einige Module laden optionale Webfonts extern. Die Kerninhalte liegen lokal im Paket. Für die Online-OS-Runtime wird eine Internetverbindung benötigt.</div>
+  <footer>Öffne diese Datei im Browser, um das Bündel zu verwenden.</footer>
+</main>
+</body></html>

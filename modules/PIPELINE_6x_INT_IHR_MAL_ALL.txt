@@ -1,0 +1,61 @@
+// --- ATOM.tmp.ready ---
+// ATOM.tmp.ready :: TEIL-X :: VORARBEIT ONLY
+// was: 81 Datensätze markieren
+// grenze: nur ATOM, bis 81
+// gibt_ab: 81.tmp.ready
+// macht_nicht: bauen, rendern, speichern
+// axiom zähler alle 6e zum 9e
+export const ATOM_81 = Array.from({length:81}, (_,i)=>({id:i,mark:"UNSET"}));
+export const screenTransform = (a,r,ry,rx)=>({angle:a,radius:r,extraRotY:ry,rotX:rx});
+
+
+// --- NANO.tmp.ready ---
+// NANO.tmp.ready :: TEIL-X
+// was: tmpZ/tmpX Fahrzeug-Markierung
+// grenze: nur MARK, kein DRIVE
+// gibt_ab: fahrzeug.tmp.ready
+// macht_nicht: fahren, lenken, crashen
+// axiom zähler alle 6e zum 9e
+export function pumpMark(tmpZ,tmpX){return {tmpZ:"MARK",tmpX:"MARK",tmpW:"MARK"};}
+export const screenTransform = (a,r,ry,rx)=>({lookAt:"CENTER",selfRotate:ry});
+
+
+// --- BIO.tmp.ready ---
+// BIO.tmp.ready :: TEIL-X
+// was: b.i.o-Konformität
+// grenze: nur prüfen, nicht heilen
+// gibt_ab: bio.pipe.ready
+// macht_nicht: eingreifen, kurieren
+// axiom zähler alle 6e zum 9e
+export const bioPipeline = {konform:"MARKIERT",eingriff:null,net:"MARK"};
+export const screenTransform = (a,r,ry,rx)=>({axis:a,observeOnly:true});
+
+
+// --- BIOLENSTEL.tmp.ready ---
+// BIOLENSTEL.tmp.ready :: TEIL-X
+// was: Joystick tmpY/tmpU/tmpD
+// grenze: AIR/AIV = GRENZE
+// gibt_ab: joystick.tmp.ready
+// macht_nicht: steuern, fliegen
+// axiom zähler alle 6e zum 9e
+export const joystick = {tmpY:"MARK",tmpU:"MARK",tmpD:"MARK",AIR:"GRENZE",AIV:"GRENZE"};
+
+
+// --- ORDNUNG.tmp.ready ---
+// ORDNUNG.tmp.ready :: TEIL-X
+// was: RAM + 81->2268 Skalierung
+// grenze: nur MAP, kein ALLOC
+// gibt_ab: ram.map.ready
+// macht_nicht: allozieren, booten
+// axiom zähler alle 6e zum 9e
+export const ordnung = {ram:"MARKIERT",scale:"81->2268",alloc:null,output:"MARK"};
+
+
+// --- SYS_HOME.tmp.ready ---
+// SYS_HOME.tmp.ready :: TEIL-X
+// was: ORT tmpOMG + BIOS Last
+// grenze: BIOS=0 Last, nur MARK
+// gibt_ab: ort.sys.ready
+// macht_nicht: booten, home setzen
+// axiom zähler alle 6e zum 9e
+export const sys = {ort:"tmpOMG",w:88,bios:0,last:0,boot:null};

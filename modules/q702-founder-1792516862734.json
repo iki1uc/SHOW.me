@@ -1,0 +1,106 @@
+{
+  "timestamp": 1792516862733,
+  "system": "Q702 FOUNDER",
+  "q702_mini": true,
+  "pipeline4": {
+    "phase": "FUSION",
+    "ready": true,
+    "achse": "27⊃3⊃9⊃81⊃729"
+  },
+  "pipebuild": {
+    "status": "BUILD-READY",
+    "modules": 9,
+    "axes": [
+      "3",
+      "4",
+      "6",
+      "27",
+      "X",
+      "tmp"
+    ]
+  },
+  "door": {
+    "open": true,
+    "count": 3
+  },
+  "doo": {
+    "active": true,
+    "count": 3
+  },
+  "koop": [
+    "3",
+    "HOME",
+    "ORT",
+    "ARBEIT",
+    "999",
+    "99",
+    "9"
+  ],
+  "raw": {
+    "count": 913454671142,
+    "active": false
+  },
+  "messpunkte": [
+    {
+      "station": "Station 9",
+      "lvl0": 0,
+      "upd": 1,
+      "upg": 0,
+      "rev": 2,
+      "evo": 1,
+      "eich": "✓",
+      "datum": "2026-05-12",
+      "zeit": "02:14",
+      "besser": "3er Anker"
+    },
+    {
+      "station": "HOME",
+      "lvl0": 0,
+      "upd": 3,
+      "upg": 1,
+      "rev": 0,
+      "evo": 2,
+      "eich": "✓",
+      "datum": "2026-05-11",
+      "zeit": "19:42",
+      "besser": "WLAN"
+    },
+    {
+      "station": "ORT",
+      "lvl0": 0,
+      "upd": 0,
+      "upg": 2,
+      "rev": 1,
+      "evo": 1,
+      "eich": "—",
+      "datum": "2026-05-10",
+      "zeit": "11:03",
+      "besser": "BT"
+    },
+    {
+      "station": "ARBEIT",
+      "lvl0": 0,
+      "upd": 2,
+      "upg": 2,
+      "rev": 3,
+      "evo": 0,
+      "eich": "✓",
+      "datum": "2026-05-12",
+      "zeit": "08:30",
+      "besser": "WAN"
+    },
+    {
+      "station": "3",
+      "lvl0": 0,
+      "upd": 11,
+      "upg": 9,
+      "rev": 9,
+      "evo": 9,
+      "eich": "✓✓",
+      "datum": "2026-05-13",
+      "zeit": "00:01",
+      "besser": "leicht"
+    }
+  ],
+  "file": "q702.html = neuer index.html"
+}

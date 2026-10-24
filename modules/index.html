@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NUTZRAUM WÜRFEL OS — vectorcityzen.live</title>
+<style>
+:root{--c:#00ccff;--sp:22s;--bg:#02060a}
+*{box-sizing:border-box;font-family:ui-monospace,Menlo,Consolas,monospace}
+html,body{margin:0;height:100%;background:var(--bg);color:#fff;overflow:hidden;user-select:none}
+#top{position:fixed;top:0;left:0;right:0;height:48px;z-index:9999;display:flex;align-items:center;gap:8px;padding:0 10px;background:rgba(2,6,10,.9);border-bottom:1px solid var(--c);overflow-x:auto;white-space:nowrap}
+#top b{color:var(--c);letter-spacing:.12em;font-size:13px}
+.xt span{font-size:10px;padding:1px 5px;border:1px solid #234;margin-left:2px}.xt span.on{background:var(--c);color:#000}
+button,select,input{font:inherit;font-size:11px;color:#fff;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:5px;padding:4px 8px}
+button.on{background:var(--c);color:#000;border-color:var(--c)}
+#desk{position:fixed;inset:48px 0 56px 0;overflow:hidden;perspective:1000px}
+#cw{position:absolute;left:50%;top:50%;width:240px;height:240px;margin:-120px;transform-style:preserve-3d;pointer-events:none;opacity:.8}
+#cube{width:100%;height:100%;transform-style:preserve-3d;animation:sp var(--sp) linear infinite}
+@keyframes sp{0%{transform:rotateX(-12deg) rotateY(0)}50%{transform:rotateX(14deg) rotateY(180deg)}100%{transform:rotateX(-12deg) rotateY(360deg)}}
+.f{position:absolute;inset:0;border:1px solid var(--c);display:grid;place-items:center;text-align:center;color:var(--c);font-weight:700;text-shadow:0 0 12px var(--c);background:linear-gradient(135deg,rgba(0,204,255,.08),rgba(57,255,136,.05))}
+.f small{display:block;font-size:9px;opacity:.6;font-weight:400}
+.win{position:absolute;display:flex;flex-direction:column;background:rgba(8,14,22,.95);border:1px solid var(--c);border-radius:10px;overflow:hidden;box-shadow:0 0 30px rgba(0,204,255,.2);max-width:98vw;max-height:calc(100% - 4px)}
+.bar{height:30px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 8px;font-size:11px;font-weight:700;letter-spacing:.06em;background:linear-gradient(90deg,rgba(0,204,255,.2),transparent);cursor:move;touch-action:none}
+.bar button{width:22px;height:22px;padding:0;border-radius:50%}
+.body{flex:1;overflow:auto;padding:8px;display:flex;flex-direction:column;gap:8px;min-height:0}
+canvas{max-width:100%;border-radius:6px;background:#050a0a;touch-action:none}
+.row{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.pill{font-size:9px;opacity:.6}
+#dock{position:fixed;left:0;right:0;bottom:0;height:56px;z-index:9999;display:flex;gap:6px;align-items:center;padding:0 10px;overflow-x:auto;background:rgba(2,6,10,.92);border-top:1px solid var(--c)}
+#dock button{flex:none;height:36px}
+.todo{display:flex;gap:6px;align-items:center;border:1px solid rgba(255,255,255,.12);padding:4px 6px;border-radius:5px;font-size:12px}
+.todo.d span{text-decoration:line-through;opacity:.4}.todo span{flex:1}
+.g{display:grid;gap:3px}.g button{aspect-ratio:1;padding:0;font-size:9px}
+.term{background:#05080c;border-radius:6px;padding:6px;font-size:11px;white-space:pre-wrap;flex:1;overflow:auto;min-height:120px}
+</style></head><body>
+<div id="top"><b>NUTZRAUM WÜRFEL OS</b><span class="xt" id="xt"></span><span id="modes"></span><span class="pill" id="ml"></span></div>
+<div id="desk"><div id="cw"><div id="cube"></div></div></div>
+<div id="dock"></div>
+<script>
+const $=(s,p=document)=>p.querySelector(s);
+const MODES={ARBEIT:['#00ccff','22s'],SPAS:['#ff2d9a','4s'],WERK:['#ffd700','11s'],EINSTELLUNG:['#a855f7','38s']};
+let mode='ARBEIT';const XT=[3,9,27,81,243,756,729];
+function setMode(m){mode=m;const r=document.documentElement.style;r.setProperty('--c',MODES[m][0]);r.setProperty('--sp',MODES[m][1]);
+ document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b.textContent===m));$('#ml').textContent='MODE '+m}
+$('#modes').innerHTML=Object.keys(MODES).map(m=>`<button>${m}</button>`).join('');
+$('#modes').onclick=e=>{if(e.target.tagName=='BUTTON')setMode(e.target.textContent)};
+$('#xt').innerHTML=XT.map(x=>`<span>${x}</span>`).join('');let xi=0;
+setInterval(()=>{const s=document.querySelectorAll('#xt span');s.forEach((e,i)=>e.classList.toggle('on',i==xi));xi=(xi+1)%XT.length},300);
+$('#cube').innerHTML=[['NUTZRAUM','RAUM·NUTZEN','translateZ(120px)'],['WÜRFEL','QUBE·SYSTEM','rotateY(180deg) translateZ(120px)'],['Xt 756','3·9·27·81·243·756','rotateY(90deg) translateZ(120px)'],['GPU KIRSCH','MAGMA·SHADER','rotateY(-90deg) translateZ(120px)'],['CPU COCKPIT','QI IQQQ','rotateX(90deg) translateZ(120px)'],['RAM PYRA','VECTOR·GRID','rotateX(-90deg) translateZ(120px)']].map(f=>`<div class="f" style="transform:${f[2]}"><div>${f[0]}<small>${f[1]}</small></div></div>`).join('');
+
+/* ===== AUDIO (6 Melodien) ===== */
+const PE=[{n:'OST pentatonic',b:80,s:[60,62,64,67,69,72,74,76],w:'sine',d:.68,c:'#ffd700'},{n:'WEST minor epic',b:100,s:[57,60,62,64,67,69,72],w:'sawtooth',d:.52,c:'#ff7a18'},{n:'PAULI punk',b:140,s:[64,67,69,71,76,79],w:'square',d:.18,c:'#ff5a5f'},{n:'SIEGFRIED battle',b:120,s:[60,64,67,69,72],w:'triangle',d:.46,c:'#00ccff'},{n:'VULKAN drone',b:62,s:[33,36,38,40,41,43],w:'sine',d:1.1,c:'#39ff88'},{n:'ACHSE techno',b:128,s:[60,63,65,67,70,72,75],w:'square',d:.16,c:'#a855f7'}];
+let AC,G,AN,seq=null,vol=.35;
+function ac(){if(!AC){AC=new(window.AudioContext||window.webkitAudioContext)();G=AC.createGain();G.gain.value=vol;AN=AC.createAnalyser();AN.fftSize=128;G.connect(AN);AN.connect(AC.destination)}AC.resume();return AC}
+function stopSeq(){clearInterval(seq);seq=null}
+function startSeq(m,off){stopSeq();ac();const p=PE[m];let st=0;seq=setInterval(()=>{const t=AC.currentTime,n=p.s[(st*2+(Math.random()*2|0))%p.s.length]+(off?off():0),o=AC.createOscillator(),g=AC.createGain(),f=AC.createBiquadFilter();
+ o.type=p.w;o.frequency.value=440*2**((n-69)/12);f.type='lowpass';f.frequency.value=2200;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.4,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+p.d);o.connect(f);f.connect(g);g.connect(G);o.start(t);o.stop(t+p.d+.1);st=(st+1)%8},60/p.b*500)}
+function bars(cv,col){const x=cv.getContext('2d');x.fillStyle='#080e14';x.fillRect(0,0,cv.width,cv.height);if(!AN||!seq)return;const a=new Uint8Array(AN.frequencyBinCount);AN.getByteFrequencyData(a);const w=cv.width/a.length;x.fillStyle=col;a.forEach((v,i)=>{const h=v/255*cv.height;x.fillRect(i*w,cv.height-h,w-1,h)})}
+
+/* ===== FENSTER ===== */
+let Z=30;const wins={};
+const DEF={
+DRACHE:{t:'🐉 DRACHE.exe — 6 Modi',w:760,h:520,open:1,init:drache},
+VECTOR:{t:'VECTORCITYZEN.live',w:380,h:420,open:1,init:vector},
+PAINT:{t:'PAINT.exe',w:480,h:420,init:paint},
+PLAYER:{t:'PLAYER Δ — BEATS',w:440,h:380,init:player},
+TODO:{t:'TODO — Station Log',w:380,h:420,init:todo},
+KALENDER:{t:'KALENDER — QI CYCLE',w:340,h:400,init:kalender},
+'9x9':{t:'STATIONEN 9x9 — 81 GRID',w:400,h:440,init:station},
+TERMINAL:{t:'TERMINAL — Xt shell',w:480,h:360,init:terminal},
+MAGMA:{t:'MAGMA VULKAN OP — GPU KIRSCH',w:500,h:420,init:magma}};
+function mk(id){const d=DEF[id],w=document.createElement('div');w.className='win';
+ const k=Object.keys(DEF).indexOf(id);w.style.cssText=`left:${Math.min(20+k*26,innerWidth-120)}px;top:${10+k*22}px;width:${Math.min(d.w,innerWidth-8)}px;height:${Math.min(d.h,innerHeight-120)}px;z-index:${++Z}`;
+ w.innerHTML=`<div class="bar"><span>${d.t}</span><button>✕</button></div><div class="body"></div>`;$('#desk').appendChild(w);
+ w.onpointerdown=()=>w.style.zIndex=++Z;
+ const b=$('.bar',w);let o=null;
+ b.onpointerdown=e=>{if(e.target.tagName=='BUTTON')return;o=[e.clientX-w.offsetLeft,e.clientY-w.offsetTop];b.setPointerCapture(e.pointerId)};
+ b.onpointermove=e=>{if(o){w.style.left=Math.max(-80,Math.min(innerWidth-60,e.clientX-o[0]))+'px';w.style.top=Math.max(0,e.clientY-o[1])+'px'}};
+ b.onpointerup=()=>o=null;
+ $('button',b).onclick=()=>toggle(id);
+ const cleanup=d.init($('.body',w))||(()=>{});wins[id]={w,cleanup};}
+function toggle(id){if(wins[id]){wins[id].cleanup();wins[id].w.remove();delete wins[id]}else mk(id);
+ document.querySelectorAll('#dock button').forEach(b=>b.classList.toggle('on',!!wins[b.dataset.id]))}
+$('#dock').innerHTML=Object.keys(DEF).map(k=>`<button data-id="${k}">${k=='DRACHE'?'🐉':''}${k}</button>`).join('');
+$('#dock').onclick=e=>{if(e.target.dataset.id)toggle(e.target.dataset.id)};
+const H=(b,h)=>b.insertAdjacentHTML('beforeend',h);
+
+/* ===== DRACHE (Ost/West/Pauli/Siegfried/Vulkan/Achse) ===== */
+function drache(b){
+ const MN=['OST','WEST','PAULI','SIEGFRIED','VULKAN','ACHSE'],COL=[['#ffd700','#ff8c00'],['#ff7a18','#ff2200'],['#ff5a5f','#8b0000'],['#00ccff','#a855f7'],['#39ff88','#00cc88'],['#00ccff','#a855f7']];
+ let m=0,mus=0;H(b,`<div class="row" id="mb">${MN.map((n,i)=>`<button>${i+1} ${n}</button>`).join('')}<button id="mu">♪ MELODIE OFF</button><input id="vo" type="range" min="0" max="100" value="35" style="width:70px"></div><canvas width="720" height="420" style="width:100%"></canvas><div class="pill">Maus = Kopf · Klick halten = Feuer · Tasten 1–6 = Modus · WASD = Held (Siegfried)</div>`);
+ const cv=$('canvas',b),x=cv.getContext('2d'),W=720,Hh=420,ch=Array.from({length:24},(_,i)=>({x:400-i*14,y:200,vx:0,vy:0})),mo={x:400,y:200,d:0},hero={x:80,y:300,hp:100},dr={hp:100},ps=[],K={};let t=0,raf;
+ const sel=()=>{[...$('#mb',b).children].slice(0,6).forEach((e,i)=>e.classList.toggle('on',i==m));if(mus)startSeq(m,()=>Math.min(7,Math.hypot(ch[0].vx,ch[0].vy)*.85))};
+ $('#mb',b).onclick=e=>{const i=[...$('#mb',b).children].indexOf(e.target);if(i>=0&&i<6){m=i;sel()}};
+ $('#mu',b).onclick=e=>{mus=!mus;e.target.classList.toggle('on',mus);e.target.textContent=mus?'♪ MELODIE ON':'♪ MELODIE OFF';mus?startSeq(m,()=>Math.min(7,Math.hypot(ch[0].vx,ch[0].vy)*.85)):stopSeq()};
+ $('#vo',b).oninput=e=>{vol=e.target.value/100;if(G)G.gain.value=vol};
+ const pos=e=>{const r=cv.getBoundingClientRect(),p=e.touches?e.touches[0]:e;mo.x=(p.clientX-r.left)*W/r.width;mo.y=(p.clientY-r.top)*Hh/r.height};
+ cv.onpointermove=pos;cv.onpointerdown=e=>{mo.d=1;pos(e)};addEventListener('pointerup',up);function up(){mo.d=0}
+ const kd=e=>{K[e.key.toLowerCase()]=1;if(/^[1-6]$/.test(e.key)&&wins.DRACHE){m=e.key-1;sel()}},ku=e=>K[e.key.toLowerCase()]=0;addEventListener('keydown',kd);addEventListener('keyup',ku);
+ sel();
+ function loop(){raf=requestAnimationFrame(loop);t+=.016;const tg=m==3?hero:mo;
+  if(m==3){if(K.w)hero.y-=3;if(K.s)hero.y+=3;if(K.a)hero.x-=3;if(K.d)hero.x+=3;hero.x=Math.max(15,Math.min(W-15,hero.x));hero.y=Math.max(15,Math.min(Hh-15,hero.y))}
+  const h=ch[0],dx=tg.x-h.x,dy=tg.y-h.y;h.vx=(h.vx+dx*.014)*.86;h.vy=(h.vy+dy*.014)*.86;h.x+=h.vx;h.y+=h.vy;
+  const L=m==5?22:m==0?18:16;for(let i=1;i<24;i++){const a=ch[i-1],c=ch[i],ex=a.x-c.x,ey=a.y-c.y,d=Math.hypot(ex,ey)||1;if(d>L){c.x=a.x-ex/d*L;c.y=a.y-ey/d*L}c.y+=Math.sin(t*3+i*.6)*.5}
+  const bg=['#0b111a','#1a0806','#160a0e','#0a1218','#050a05','#020305'][m];x.fillStyle=bg;x.fillRect(0,0,W,Hh);
+  if(m>=4){x.strokeStyle='rgba(57,255,136,.08)';for(let i=0;i<W;i+=40){x.beginPath();x.moveTo(i,0);x.lineTo(i,Hh);x.stroke()}for(let i=0;i<Hh;i+=40){x.beginPath();x.moveTo(0,i);x.lineTo(W,i);x.stroke()}}
+  if(mo.d||(m==1&&Math.random()<.15)){const a=Math.atan2(h.vy,h.vx||.01);for(let i=0;i<(mo.d?5:1);i++)ps.push({x:h.x+Math.cos(a)*26,y:h.y+Math.sin(a)*8,vx:Math.cos(a)*(4+Math.random()*6)+Math.random()*2-1,vy:Math.sin(a)*2+Math.random()*3-1.5,l:1,c:m==2?'#ff5a5f':m==4?'#39ff88':'#ffd07a'})}
+  for(let i=ps.length-1;i>=0;i--){const p=ps[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.1;p.l-=.02;if(p.l<=0){ps.splice(i,1);continue}x.globalAlpha=p.l;x.fillStyle=p.c;x.beginPath();x.arc(p.x,p.y,3+(1-p.l)*6,0,7);x.fill();if(m==3&&Math.hypot(p.x-hero.x,p.y-hero.y)<18){hero.hp=Math.max(0,hero.hp-.6);p.l=0}}x.globalAlpha=1;
+  const [c1,c2]=COL[m];for(let i=23;i>0;i--){const a=ch[i-1],c=ch[i],f=i/24;
+   if(m==4){x.strokeStyle=i%2?'rgba(57,255,136,.4)':'#39ff88';x.lineWidth=1.2;x.beginPath();x.arc(c.x,c.y,5,0,7);x.stroke()}
+   else{x.strokeStyle=m==5?`hsl(${i*12},100%,60%)`:c1;x.lineWidth=(1-f)*13+2;x.lineCap='round';x.beginPath();x.moveTo(a.x,a.y);x.lineTo(c.x,c.y);x.stroke();x.fillStyle=m==2&&i%2?'#f4efe6':c2;x.beginPath();x.arc(c.x,c.y,6-f*3,0,7);x.fill()}
+   if(m==5){x.strokeStyle='#f44';x.beginPath();x.moveTo(c.x,c.y);x.lineTo(c.x+16,c.y);x.stroke();x.strokeStyle='#39ff88';x.beginPath();x.moveTo(c.x,c.y);x.lineTo(c.x,c.y+16);x.stroke();x.fillStyle='#fff';x.font='8px monospace';x.fillText(i,c.x+9,c.y-5)}}
+  if(m==1||m==3){x.fillStyle='rgba(255,122,24,.3)';x.strokeStyle=c1;const q=ch[4],s=Math.sin(t*3)*.35+.65;for(const sg of[1,-1]){x.beginPath();x.moveTo(q.x,q.y);x.lineTo(q.x-40,q.y+sg*70*s);x.lineTo(q.x-70,q.y+sg*30*s);x.closePath();x.fill();x.stroke()}}
+  x.fillStyle='#fff';x.beginPath();x.arc(h.x,h.y,m==4?6:12,0,7);x.fill();x.fillStyle='#000';x.beginPath();x.arc(h.x+2,h.y,4,0,7);x.fill();x.fillStyle=c1;x.font='bold 14px monospace';x.fillText(['東','W','♛','⚔','⬡','◉'][m],h.x-8,h.y-18);
+  if(m==3){x.fillStyle='#e8f0ff';x.fillRect(hero.x-10,hero.y-14,20,28);x.fillStyle='#fff';x.font='10px monospace';x.fillText('SIEGFRIED',hero.x-24,hero.y-18);if(Math.hypot(h.x-hero.x,h.y-hero.y)<26)hero.hp-=.3;if(hero.hp<=0){hero.hp=100;hero.x=80;hero.y=300}
+   x.fillStyle='#000a';x.fillRect(10,10,160,14);x.fillStyle='#00ccff';x.fillRect(10,10,hero.hp*1.6,14);x.fillStyle='#fff';x.fillText('HERO '+(hero.hp|0)+'%',14,21)}
+  if(m==2){x.fillStyle='rgba(255,40,70,.9)';x.font='bold 18px monospace';x.fillText('ST. PAULI',W-120,28)}
+  x.fillStyle=c1;x.font='11px monospace';x.fillText(MN[m]+' · '+PE[m].n,10,Hh-10)}
+ loop();return()=>{cancelAnimationFrame(raf);removeEventListener('keydown',kd);removeEventListener('keyup',ku);removeEventListener('pointerup',up);stopSeq()}}
+
+/* ===== VECTOR ===== */
+function vector(b){H(b,`<div style="font-size:22px;font-weight:900;line-height:1">live 2 life<br><span style="color:var(--c)">vectorcityzen</span></div><div class="pill">VECTORCITYZEN.LIVE · QI IQQQ · OHNE INSTALLIEREN</div>
+<div style="font-size:12px;line-height:1.6;opacity:.85">Dieses OS vereint alle Builds: Drache GPU Magma, Drachen Achsen, Vulkan OP, Nutzraum Würfel, Index 6fach. Ein Würfel mit 6 Seiten = 6 Modi. VectorCity = 81 Stationen. Xt = 756.<br><br>Wir installieren nicht. Wir bewohnen. Vector = Richtung. Zen = Stillstand. City = Raster.</div>
+<div class="g" style="grid-template-columns:1fr 1fr">${[['NUTZRAUM','Raum nutzen'],['WÜRFEL','6 faces = 6 tools'],['Xt 756','3 9 27 81 243 756 729'],['GPU KIRSCH','Magma shader'],['CPU COCKPIT','QI IQQQ'],['RAM PYRA','Pyramide']].map(a=>`<div style="border:1px solid #fff2;border-radius:6px;padding:6px"><b style="color:var(--c);font-size:10px">${a[0]}</b><div style="font-size:11px;opacity:.7">${a[1]}</div></div>`).join('')}</div>`)}
+
+/* ===== PAINT ===== */
+function paint(b){let col='#00ccff',sz=6,dn=0;H(b,`<div class="row"><input type="color" value="#00ccff"><input type="range" min="1" max="32" value="6" style="width:90px"><button id="cl">CLEAR</button><button id="ex">EXPORT PNG</button></div><canvas width="480" height="300" style="width:100%"></canvas>`);
+ const cv=$('canvas',b),x=cv.getContext('2d'),clr=()=>{x.fillStyle='#0a1218';x.fillRect(0,0,480,300)};clr();
+ $('input',b).oninput=e=>col=e.target.value;$('input[type=range]',b).oninput=e=>sz=+e.target.value;$('#cl',b).onclick=clr;
+ $('#ex',b).onclick=()=>{const a=document.createElement('a');a.href=cv.toDataURL();a.download='nutzraum-paint.png';a.click()};
+ const p=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*480/r.width,(e.clientY-r.top)*300/r.height]};
+ cv.onpointerdown=e=>{dn=1;x.beginPath();x.moveTo(...p(e));cv.setPointerCapture(e.pointerId)};
+ cv.onpointermove=e=>{if(!dn)return;x.strokeStyle=col;x.lineWidth=sz;x.lineCap='round';x.lineTo(...p(e));x.stroke()};cv.onpointerup=()=>dn=0}
+
+/* ===== PLAYER ===== */
+function player(b){let ix=0,on=0,raf;H(b,`<div class="row"><button id="pl">▶ PLAY Δ</button><select>${PE.map((p,i)=>`<option value="${i}">${i} ${p.n} ${p.b}bpm</option>`).join('')}</select></div><canvas width="420" height="200" style="width:100%"></canvas><div class="pill">Prozedurales WebAudio — gleiche 6 Melodien wie DRACHE. Klick zum Starten.</div>`);
+ const cv=$('canvas',b);$('select',b).onchange=e=>{ix=+e.target.value;if(on)startSeq(ix)};
+ $('#pl',b).onclick=e=>{on=!on;e.target.textContent=on?'■ STOP':'▶ PLAY Δ';on?startSeq(ix):stopSeq()};
+ (function l(){raf=requestAnimationFrame(l);bars(cv,PE[ix].c)})();return()=>{cancelAnimationFrame(raf);stopSeq()}}
+
+/* ===== TODO ===== */
+function todo(b){const today=new Date().toISOString().slice(0,10);let L=[{t:'Nutzraum Würfel aufstellen',c:'ARBEIT',d:today,x:0},{t:'6 Drachen prüfen',c:'WERK',d:today,x:0},{t:'GPU KIRSCH magma live',c:'SPAS',d:today,x:1}];
+ H(b,`<div class="row"><input placeholder="neue Aufgabe…" style="flex:1;min-width:100px"><select><option>ARBEIT</option><option>SPAS</option><option>WERK</option></select><input type="date" value="${today}"><button id="ad">ADD</button></div><div id="ls" style="display:flex;flex-direction:column;gap:4px"></div><div class="pill" id="ct"></div><button id="cp">COPY EXPORT</button>`);
+ const ls=$('#ls',b),r=()=>{ls.innerHTML=L.map((o,i)=>`<div class="todo ${o.x?'d':''}"><input type="checkbox" ${o.x?'checked':''} data-i="${i}"><b style="font-size:9px;color:var(--c)">${o.c}</b><span>${o.t}</span><i style="font-size:9px;opacity:.5">${o.d}</i><button data-r="${i}">×</button></div>`).join('');$('#ct',b).textContent=L.filter(o=>!o.x).length+' offen · nur im Speicher'};r();
+ const add=()=>{const i=$('input',b);if(!i.value.trim())return;L.unshift({t:i.value.trim(),c:$('select',b).value,d:$('input[type=date]',b).value,x:0});i.value='';r()};
+ $('#ad',b).onclick=add;$('input',b).onkeydown=e=>e.key=='Enter'&&add();
+ ls.onclick=e=>{const t=e.target;if(t.dataset.i){L[t.dataset.i].x=!L[t.dataset.i].x;r()}if(t.dataset.r){L.splice(t.dataset.r,1);r()}};
+ $('#cp',b).onclick=()=>navigator.clipboard?.writeText(L.map(o=>`[${o.x?'x':' '}] ${o.c} ${o.d} ${o.t}`).join('\n'))}
+
+/* ===== KALENDER ===== */
+function kalender(b){let d=new Date(),y=d.getFullYear(),mo=d.getMonth(),sel=d.getDate();const t=new Date();H(b,`<div class="row" style="justify-content:space-between"><button id="p">‹</button><b id="tt"></b><button id="n">›</button></div><div class="g" id="cg" style="grid-template-columns:repeat(7,1fr)"></div><div class="pill" id="sl"></div>`);
+ const r=()=>{$('#tt',b).textContent=new Date(y,mo).toLocaleString('de-DE',{month:'long',year:'numeric'}).toUpperCase();const f=(new Date(y,mo,1).getDay()+6)%7,n=new Date(y,mo+1,0).getDate();
+  $('#cg',b).innerHTML=['MO','DI','MI','DO','FR','SA','SO'].map(s=>`<div class="pill" style="text-align:center">${s}</div>`).join('')+'<i></i>'.repeat(f)+Array.from({length:n},(_,i)=>{const dd=i+1,td=dd==t.getDate()&&mo==t.getMonth()&&y==t.getFullYear();return`<button data-d="${dd}" class="${dd==sel?'on':''}" style="${td?'border-color:var(--c)':''}">${dd}</button>`}).join('');$('#sl',b).textContent=`GEWÄHLT: ${sel}.${mo+1}.${y}`};r();
+ $('#p',b).onclick=()=>{mo--;if(mo<0){mo=11;y--}r()};$('#n',b).onclick=()=>{mo++;if(mo>11){mo=0;y++}r()};$('#cg',b).onclick=e=>{if(e.target.dataset.d){sel=+e.target.dataset.d;r()}}}
+
+/* ===== 9x9 ===== */
+function station(b){let A=Array.from({length:81},(_,i)=>i%7==0||i==40);H(b,`<div class="pill" id="ct"></div><div class="g" id="gr" style="grid-template-columns:repeat(9,1fr)"></div><div class="row"><button id="c">CLEAR</button><button id="f">FILL</button><button id="r">RANDOM</button></div><div class="pill">9×9 = 81 · 3ⁿ Skalierung · IKI1UC</div>`);
+ const r=()=>{$('#gr',b).innerHTML=A.map((v,i)=>`<button data-i="${i}" class="${v?'on':''}">${i==40?'♔':i+1}</button>`).join('');$('#ct',b).textContent=A.filter(Boolean).length+'/81 AKTIV'};r();
+ $('#gr',b).onclick=e=>{if(e.target.dataset.i){A[e.target.dataset.i]=!A[e.target.dataset.i];r()}};
+ $('#c',b).onclick=()=>{A.fill(false);r()};$('#f',b).onclick=()=>{A.fill(true);r()};$('#r',b).onclick=()=>{A=A.map(()=>Math.random()>.5);r()}}
+
+/* ===== TERMINAL ===== */
+function terminal(b){H(b,`<div class="term" id="o">NUTZRAUM WÜRFEL OS — final · vectorcityzen.live\nQI IQQQ · ohne installieren\ntype help\n</div><div class="row"><span style="color:var(--c)">❯</span><input style="flex:1" placeholder="Befehl…"><button>RUN</button></div>`);
+ const o=$('#o',b),i=$('input',b),C={help:'help, vector, drache, magma, qi, xt, modes, recall, open NAME, clear',vector:'VECTORCITYZEN — 81 Stationen, alle Builds vereint',drache:'0 OST · 1 WEST · 2 PAULI · 3 SIEGFRIED · 4 VULKAN · 5 ACHSE — Kopf folgt Maus',magma:'GPU KIRSCH — Magma-Metaballs, Tempo je Modus',qi:'QI IQQQ — 3 9 27 81 243 756 729',xt:'Xt = '+XT.join(' · '),modes:Object.keys(MODES).join(' · '),recall:'recall allcall refinal — alles in einer index.html'};
+ const run=()=>{const v=i.value.trim().toLowerCase();let s='> '+i.value+'\n';if(v=='clear'){o.textContent='';i.value='';return}
+  if(v.startsWith('open ')){const k=Object.keys(DEF).find(k=>k.toLowerCase()==v.slice(5));if(k){if(!wins[k])toggle(k);s+='ok '+k+'\n'}else s+='unbekannt\n'}
+  else if(MODES[v.toUpperCase()]){setMode(v.toUpperCase());s+='mode '+v.toUpperCase()+'\n'}else s+=(C[v]||(v?'unbekannt: '+v:''))+'\n';o.textContent+=s;o.scrollTop=1e5;i.value=''};
+ $('button',b).onclick=run;i.onkeydown=e=>e.key=='Enter'&&run()}
+
+/* ===== MAGMA ===== */
+function magma(b){H(b,`<div class="pill">MAGMA VULKAN OP — GPU KIRSCH — Metaballs · Tempo folgt dem Modus</div><canvas width="480" height="340" style="width:100%"></canvas>`);
+ const cv=$('canvas',b),x=cv.getContext('2d'),B=Array.from({length:12},()=>({x:Math.random()*480,y:Math.random()*340,r:40+Math.random()*70,vx:Math.random()*1.2-.6,vy:Math.random()*1.2-.6,h:10+Math.random()*40}));let raf;
+ (function l(){raf=requestAnimationFrame(l);const s=mode=='SPAS'?2.2:mode=='EINSTELLUNG'?.35:mode=='WERK'?.9:1;x.fillStyle='rgba(5,8,12,.24)';x.fillRect(0,0,480,340);
+  B.forEach(o=>{o.x+=o.vx*s;o.y+=o.vy*s;if(o.x<0||o.x>480)o.vx*=-1;if(o.y<0||o.y>340)o.vy*=-1;const g=x.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);g.addColorStop(0,`hsla(${o.h},100%,60%,.55)`);g.addColorStop(.3,`hsla(${o.h+10},100%,55%,.22)`);g.addColorStop(1,'transparent');x.fillStyle=g;x.beginPath();x.arc(o.x,o.y,o.r,0,7);x.fill()});
+  x.strokeStyle='rgba(0,204,255,.3)';for(let i=0;i<12;i++)for(let j=i+1;j<12;j++){const d=Math.hypot(B[i].x-B[j].x,B[i].y-B[j].y);if(d<140){x.globalAlpha=1-d/140;x.beginPath();x.moveTo(B[i].x,B[i].y);x.lineTo(B[j].x,B[j].y);x.stroke()}}x.globalAlpha=1})();
+ return()=>cancelAnimationFrame(raf)}
+
+setMode('ARBEIT');toggle('DRACHE');toggle('VECTOR');
+</script></body></html>
